@@ -4,8 +4,8 @@ XYscope xy;         // create XYscope instance
 
 ArrayList<Stroke> strokesBuffer;
 int globalLifespan = 1000;
-float dotSize = 0.5;
-int globalAlpha = 63;
+float dotSize = 1;
+int globalAlpha = 255;
 
 void setup() {
   size(512, 512, P2D);

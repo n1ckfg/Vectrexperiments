@@ -5,6 +5,7 @@ class Stroke {
   int timestamp;
   int lifespan = 1000;
   color col;
+  int skipPoints = 10; // Vectrex is limited how many points it can draw per frame
   
   Stroke() {
     index = 0;
@@ -44,19 +45,23 @@ class Stroke {
   
   void draw() {
     noFill();
-    stroke(col, globalAlpha);
+    stroke(255, globalAlpha);
     strokeWeight(dotSize);
     beginShape();
     
+    /*
     int len = points.size();
     if (len > 1) {
       PVector p = points.get(len-1);
       PVector pp = points.get(len-2);
       xy.line(p.x, p.y, pp.x, pp.y);
     }
+    */
     
-    for (PVector p : points) {
-      vertex(p.x, p.y, p.z);
+    for (int i=0; i<points.size(); i+=skipPoints) {
+      PVector p = points.get(i);
+      vertex(p.x, p.y);//, p.z);
+      xy.point(p.x, p.y);
     }
     endShape();
   }
