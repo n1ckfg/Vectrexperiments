@@ -1,5 +1,5 @@
-boolean drawResult = true;
+boolean drawDebug = false;
 
 void keyPressed() {
-  drawResult = !drawResult;
+  drawDebug = !drawDebug;
 }

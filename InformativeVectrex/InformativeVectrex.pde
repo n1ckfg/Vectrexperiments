@@ -7,15 +7,17 @@ void setup() {
   xyScopeSetup();
 
   surface.setSize(cam.width, cam.height);
-}
+}  
 
 void draw() {
   videoUpdate();
   
-  if (drawResult) {
+  if (drawDebug) {
     image(result, 0, 0, width, height);
+    
+    
   } else {
-    image(cam, 0, 0, width, height);
+    image(result, 0, 0, width, height);
   }
 
   surface.setTitle("" + frameRate);
