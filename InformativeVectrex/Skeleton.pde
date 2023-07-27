@@ -5,68 +5,71 @@ import java.awt.geom.AffineTransform;
 import java.util.*;
 import traceskeleton.*;
 
-
-int scl = 2;
-PGraphics pg;
 ArrayList<ArrayList<int[]>>  c;
 ArrayList<int[]> rects = new ArrayList<int[]>();
 boolean[]  im;
-int W = 300;
-int H = 300;
-PImage img;
 
-void skeletonSetup(){
-  img = loadImage("opencv-thinning-src-img.png"); 
-  pg = createGraphics(W,H);
-  pg.beginDraw();
-  pg.background(0);
-  pg.image(img,0,0);
-  pg.endDraw();
+int skelW = 512;
+int skelH = 512;
+PGraphics skelPg;
+boolean invert = true;
+int threshold = 32; // 128;
+int skelVal = 1; // 10;
+int skipPoints = 2;
+
+void skeletonSetup() {
+  im = new boolean[skelW * skelH];
   
-  im = new boolean[W*H];
+  skelPg = createGraphics(skelW, skelH, JAVA2D);
+  skelPg.beginDraw();
+  skelPg.background(0);
+  skelPg.endDraw();
+  skelPg.loadPixels();
 }
-void skeletonDraw(){
-  pg.beginDraw();
-  pg.noFill();
-  pg.strokeWeight(10);
-  pg.stroke(255);
-  pg.line(pmouseX/scl, pmouseY/scl, mouseX/scl,mouseY/scl);
+void skeletonDraw() { 
+  skelPg.beginDraw();
+  skelPg.image(result, 0, 0);
+  if (invert) skelPg.filter(INVERT);
+  skelPg.endDraw();
   
-  pg.loadPixels();
-  for (int i = 0; i < im.length; i++){
-    im[i] = (pg.pixels[i]>>16&0xFF)>128;
+  for (int i = 0; i < im.length; i++) {
+    skelPg.pixels[i] = abs(255 - result.pixels[i]);
+    im[i] = (skelPg.pixels[i]>>16&0xFF) > threshold;
   }
-  TraceSkeleton.thinningZS(im,W,H);
-
-  pg.endDraw();
+  
+  TraceSkeleton.thinningZS(im, skelW, skelH);
 
   rects.clear();
-  c = TraceSkeleton.traceSkeleton(im,W,H,0,0,W,H,10,999,rects);
+  c = TraceSkeleton.traceSkeleton(im, skelW, skelH, 0, 0, skelW, skelH, skelVal, 999, rects);
+  
+  for (int i = 0; i < c.size(); i++) {    
+    stroke(127 + random(127), 127 + random(127), 127 + random(127));
+    noFill();
 
-  pushMatrix();
-  scale(scl);
-  image(pg,0,0);
-  popMatrix();
-  noFill();
-  
-  for (int i = 0; i < rects.size(); i++){
-    stroke(255,0,0);
-    rect(rects.get(i)[0]*scl,rects.get(i)[1]*scl,rects.get(i)[2]*scl,rects.get(i)[3]*scl);
-  }
-  
-  strokeWeight(1);
-  
-  for (int i = 0; i < c.size(); i++){
-    stroke(random(255),random(255),random(255));
-    //strokeWeight(random(10));
     beginShape();
-    //rect(c.get(i).P.get(0)[0]*scl,c.get(i).P.get(0)[1]*scl,2,2);
-    for (int j = 0; j < c.get(i).size(); j++){
-      vertex(c.get(i).get(j)[0]*scl,c.get(i).get(j)[1]*scl);
-      rect(c.get(i).get(j)[0]*scl-2,c.get(i).get(j)[1]*scl-2,4,4);
+    xy.beginShape();
+    
+    for (int j = 0; j < c.get(i).size(); j+=skipPoints) {
+      float x1 = c.get(i).get(j)[0];
+      float y1 = c.get(i).get(j)[1];
+      vertex(x1, y1);
+      xy.vertex(x1, y1);
+      
+      //xy.point(x1, y1);
+      
+      /*
+      if (j > 0) {
+        float x2 = c.get(i).get(j-1)[0];
+        float y2 = c.get(i).get(j-1)[1];
+        xy.line(x1, y1, x2, y2);
+      }
+      */
+      
+      totalPointsCounter++;
     }
-    endShape();    
+    
+    endShape();   
+    xy.endShape();
   }
   
-  fill(255,0,0);
 }

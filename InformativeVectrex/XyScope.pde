@@ -5,6 +5,8 @@ import xyscope.*;   // import XYscope
 
 XYscope xy;         // create XYscope instance
 boolean debugXyScope = false;
+boolean clearEveryFrame = true;
+boolean isVectrex = true;
 int totalPointsCounter = 0;
 int totalPointsClearLimit = 100; // It's bad for the Vectrex hardware to clear the screen and not immediately redraw.
 
@@ -12,7 +14,8 @@ void xyScopeSetup() {
   xy = new XYscope(this); // define XYscope instance
   //xy.getMixerInfo(); // lists all audio devices
 
-  xy.vectrex(0); // 90 for landscape, 0 for portrait
+  if (isVectrex) xy.vectrex(0); // 90 for landscape, 0 for portrait
+  
   xy.ellipseDetail(30); // set detail of vertex ellipse
 
   /*
@@ -24,10 +27,10 @@ void xyScopeSetup() {
 }
 
 void xyScopeBegin() {
-  if (totalPointsCounter > totalPointsClearLimit) {
+  if (!clearEveryFrame || totalPointsCounter > totalPointsClearLimit) {
     xy.clearWaves();
+    totalPointsCounter = 0;  
   }
-  totalPointsCounter = 0;  
 }
 
 void xyScopeEnd() {

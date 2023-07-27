@@ -1,5 +1,9 @@
 boolean drawDebug = false;
 
-void keyPressed() {
-  drawDebug = !drawDebug;
+void keyReleased() {
+  if (key == 'd') {
+    drawDebug = !drawDebug;
+  } else if (key == 'c') {
+    clearEveryFrame = !clearEveryFrame;
+  }
 }

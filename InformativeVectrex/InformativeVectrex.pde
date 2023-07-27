@@ -1,24 +1,22 @@
 void setup() {
-  size(640, 480, FX2D);
+  size(512, 512, FX2D);
    
   modelSetup();
 
   videoSetup();
   xyScopeSetup();
-
-  surface.setSize(cam.width, cam.height);
+  skeletonSetup(); 
 }  
 
 void draw() {
+  xyScopeBegin();
+  
+  background(0);
   videoUpdate();
   
-  if (drawDebug) {
-    image(result, 0, 0, width, height);
-    
-    
-  } else {
-    image(result, 0, 0, width, height);
-  }
-
+  if (drawDebug) image(result, 0, 0);  
+  skeletonDraw();
+  
+  xyScopeEnd();
   surface.setTitle("" + frameRate);
 }
