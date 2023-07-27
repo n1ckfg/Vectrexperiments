@@ -93,12 +93,14 @@ class TelidonDrawCmd {
     tex.stroke(0,255,50,15);
     tex.strokeWeight(2);
     tex.beginShape();
+    xy.beginShape();
     for (int i=0; i<points.size(); i+=skipPoints) {
       PVector p = points.get(i);
       tex.vertex(p.x * w, p.y * h);
-      xy.point(p.x * w, p.y * h);
+      xy.vertex(p.x * w, p.y * h);
     }
     tex.endShape(CLOSE);
+    xy.endShape();
     
     if (labelPoints) {
       tex.strokeWeight(4);

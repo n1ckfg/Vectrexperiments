@@ -4,41 +4,42 @@ import ddf.minim.*; // minim req to gen audio
 import xyscope.*;   // import XYscope
 import latkProcessing.*;
 
-XYscope xy;         // create XYscope instance
 Latk latk; 
-  
+PVector offset = new PVector(40, -100);
+int skipPoints = 4;
+
 void setup() {
-  size(512, 512, P3D); 
-
-  xy = new XYscope(this); // define XYscope instance
-  //xy.getMixerInfo(); // lists all audio devices
-
-  xy.vectrex(0); // 90 for landscape, 0 for portrait
-  xy.ellipseDetail(30); // set detail of vertex ellipse
-
-  /*
-   If the SPOT-KILLER MOD was applied (z/brightness is always on),
-   this auto sets the brightness (from way turned down) when the sketch runs.
-   */
-  //xy.z("MOTU 3-4"); // use custom 3rd channel audio device
-  //xy.zRange(.5, 0);
+  size(512, 512, P2D); 
+  
+  xyScopeSetup();
 
   latk = new Latk(this, "jellyfish.latk");  
+  latk.normalize();
 
-  //float fov = PI/3.0;
-  //float cameraZ = (height/2.0) / tan(fov/2.0);
-  //perspective(fov, float(width)/float(height), cameraZ/100.0, cameraZ*100.0);
-  
-  initMats();
+  for (int i=0; i<latk.layers.size(); i++) {
+    LatkLayer layer = latk.layers.get(i);
+    for (int j=0; j<layer.frames.size(); j++) {
+      LatkFrame frame = layer.frames.get(j);
+      for (int k=0; k<frame.strokes.size(); k++) {
+        LatkStroke stroke = frame.strokes.get(k);
+        
+        for (int l=0; l<stroke.points.size(); l++) {
+          PVector point = stroke.s.getVertex(l);
+          point.x = abs(point.x * width) + offset.x;
+          point.y = (height - abs(point.y * height)) + offset.y;
+          stroke.s.setVertex(l, point);
+        }
+      }
+    }
+  }
 }
 
 void draw() {
   background(0);
   
-  pushMatrix();
-  translate(190, 220, 200);
   latk.run();
-  popMatrix();
+  
+  xyScopeBegin();
   
   println(latk.layers.get(0).currentFrame);
   for (int i=0; i<latk.layers.size(); i++) {
@@ -46,15 +47,17 @@ void draw() {
     LatkFrame frame = layer.frames.get(layer.currentFrame);
     for (int j=0; j<frame.strokes.size(); j++) {
       LatkStroke stroke = frame.strokes.get(j);
-      for (int k=0; k<stroke.points.size(); k++) {
-        PVector point = worldToScreenCoords(stroke.points.get(k).co);
-        xy.point(point.x, point.y);
+      
+      xy.beginShape();
+      for (int k=0; k<stroke.points.size(); k+=skipPoints) {
+        PVector point = stroke.s.getVertex(k);
+        xy.vertex(point.x, point.y);
       }
+      xy.endShape();
     }
   }
-  
-  xy.buildWaves(); // build audio from shapes
-  //xy.drawAll(); // draw all analytics
+
+  xyScopeEnd();
 
   surface.setTitle(""+frameRate);
 }
