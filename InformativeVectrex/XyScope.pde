@@ -5,8 +5,10 @@ import xyscope.*;   // import XYscope
 
 XYscope xy;         // create XYscope instance
 boolean debugXyScope = false;
+int totalPointsCounter = 0;
+int totalPointsClearLimit = 100; // It's bad for the Vectrex hardware to clear the screen and not immediately redraw.
 
-void setupXyScope() {
+void xyScopeSetup() {
   xy = new XYscope(this); // define XYscope instance
   //xy.getMixerInfo(); // lists all audio devices
 
@@ -21,11 +23,14 @@ void setupXyScope() {
   //xy.zRange(.5, 0);
 }
 
-void beginXyScope() {
-  
+void xyScopeBegin() {
+  if (totalPointsCounter > totalPointsClearLimit) {
+    xy.clearWaves();
+  }
+  totalPointsCounter = 0;  
 }
 
-void endXyScope() {
+void xyScopeEnd() {
   xy.buildWaves(); // build audio from shapes
   if (debugXyScope) xy.drawAll(); // draw all analytics
 }
