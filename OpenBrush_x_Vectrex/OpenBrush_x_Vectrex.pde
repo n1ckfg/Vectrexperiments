@@ -56,7 +56,7 @@ void draw() {
   
   latk.run();  
 
-  pushMatrix();
+    pushMatrix();
   rot += 0.01;
   rotateY(rot);
   translate(width/2, height/2);
