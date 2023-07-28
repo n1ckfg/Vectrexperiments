@@ -54,14 +54,14 @@ float rot = 0;
 void draw() {
   background(0);
   
-  latk.run();
-  
-  xyScopeBegin();
-  
+  latk.run();  
+
   pushMatrix();
   rot += 0.01;
   rotateY(rot);
-  translate(0, 0);
+  translate(width/2, height/2);
+  
+  xyScopeBegin();
   
   println(latk.layers.get(0).currentFrame);
   for (int i=0; i<latk.layers.size(); i++) {
@@ -73,15 +73,14 @@ void draw() {
       xy.beginShape();
       for (int k=0; k<stroke.points.size(); k+=skipPoints) {
         PVector point = stroke.s.getVertex(k);
-        xy.vertex(point.x, point.y);
+        xy.vertex(point.x, point.y, point.z);
       }
       xy.endShape();
     }
   }
-  
-  popMatrix();
-  
+   
   xyScopeEnd();
+  popMatrix();
 
   surface.setTitle(""+frameRate);
 }
