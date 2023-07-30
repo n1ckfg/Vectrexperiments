@@ -3,7 +3,7 @@ import java.lang.reflect.*;
 import java.lang.*;
 import java.awt.geom.AffineTransform;
 import java.util.*;
-import traceskeleton.*;
+//import traceskeleton.*;
 
 ArrayList<ArrayList<int[]>>  c;
 ArrayList<int[]> rects = new ArrayList<int[]>();
@@ -13,9 +13,10 @@ int skelW = 512;
 int skelH = 512;
 PGraphics skelPg;
 boolean invert = true;
-int threshold = 32; // 128;
-int skelVal = 1; // 10;
-int skipPoints = 2;
+int threshold = 16; // 128;
+int skelVal = 4; // 10;
+int skipPoints = 1;
+int minStrokePoints = 4;
 
 void skeletonSetup() {
   im = new boolean[skelW * skelH];
@@ -43,33 +44,35 @@ void skeletonDraw() {
   c = TraceSkeleton.traceSkeleton(im, skelW, skelH, 0, 0, skelW, skelH, skelVal, 999, rects);
   
   for (int i = 0; i < c.size(); i++) {    
-    stroke(127 + random(127), 127 + random(127), 127 + random(127));
-    noFill();
-
-    beginShape();
-    xy.beginShape();
-    
-    for (int j = 0; j < c.get(i).size(); j+=skipPoints) {
-      float x1 = c.get(i).get(j)[0];
-      float y1 = c.get(i).get(j)[1];
-      vertex(x1, y1);
-      xy.vertex(x1, y1);
+    if (c.get(i).size() >= minStrokePoints) {
+      stroke(127 + random(127), 127 + random(127), 127 + random(127));
+      noFill();
+  
+      beginShape();
+      xy.beginShape();
       
-      //xy.point(x1, y1);
-      
-      /*
-      if (j > 0) {
-        float x2 = c.get(i).get(j-1)[0];
-        float y2 = c.get(i).get(j-1)[1];
-        xy.line(x1, y1, x2, y2);
+      for (int j = 0; j < c.get(i).size(); j+=skipPoints) {
+        float x1 = c.get(i).get(j)[0];
+        float y1 = c.get(i).get(j)[1];
+        vertex(x1, y1);
+        xy.vertex(x1, y1);
+        
+        //xy.point(x1, y1);
+        
+        /*
+        if (j > 0) {
+          float x2 = c.get(i).get(j-1)[0];
+          float y2 = c.get(i).get(j-1)[1];
+          xy.line(x1, y1, x2, y2);
+        }
+        */
+        
+        totalPointsCounter++;
       }
-      */
       
-      totalPointsCounter++;
+      endShape();   
+      xy.endShape();
     }
-    
-    endShape();   
-    xy.endShape();
   }
   
 }

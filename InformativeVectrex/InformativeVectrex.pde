@@ -1,3 +1,5 @@
+import processing.javafx.*;
+
 void setup() {
   size(512, 512, FX2D);
    

@@ -6,7 +6,7 @@ import xyscope.*;   // import XYscope
 XYscope xy;         // create XYscope instance
 boolean debugXyScope = false;
 boolean clearEveryFrame = true;
-boolean isVectrex = true;
+boolean isVectrex = false;
 int totalPointsCounter = 0;
 int totalPointsClearLimit = 100; // It's bad for the Vectrex hardware to clear the screen and not immediately redraw.
 
