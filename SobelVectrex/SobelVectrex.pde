@@ -12,8 +12,24 @@ void setup() {
 
 void draw() {  
   background(0);
-  videoUpdate();
-  if (drawDebug) image(frame, 0, 0);  
-  skeletonDraw();      
+  if (drawDebug) image(frame, 0, 0);
+  
+  if (liveCapture) {
+    drawFrame(capture);
+  } else {
+    drawFrame(movie);
+  }
+  
   surface.setTitle("" + frameRate);
+}
+
+
+void drawFrame(PImage img) {
+  frame.beginDraw();
+  frame.image(img, 0, 0, frame.width, frame.height); 
+  frame.filter(shader_edge);
+  if (invert) frame.filter(INVERT);
+  frame.endDraw();     
+  
+  skeletonDraw();      
 }

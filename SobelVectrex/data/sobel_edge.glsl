@@ -1,7 +1,7 @@
 uniform sampler2D tex0;
 uniform vec2 iResolution;
 
-const float threshold = 0.8;
+const float threshold = 0.25;
 
 mat3 sx = mat3( 
     1.0, 2.0, 1.0, 

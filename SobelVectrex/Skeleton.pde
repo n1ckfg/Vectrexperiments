@@ -12,8 +12,8 @@ boolean[]  im;
 int skelW = sW;
 int skelH = sH;
 PGraphics skelPg;
-int threshold = 128; // 128;
-int skelVal = 10; // 10;
+int threshold = 16; // 128;
+int skelVal = 1; // 10;
 int skipPoints = 1;
 int minStrokePoints = 4;
 
