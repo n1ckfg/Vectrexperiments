@@ -4,7 +4,7 @@ class Stroke {
   int index;
   int timestamp;
   int lifespan = 1000;
-  color col;f
+  color col;
   int skipPoints = 1; // Vectrex is limited how many points it can draw per frame
   
   Stroke() {
